@@ -1,0 +1,12 @@
+{
+    "name": "trismegistus.core",
+    "displayName": "Tri Core",
+    "version": "0.1",
+    "unity": "2019.1",
+    "description": "Core tools and extensions",
+    "keywords": [
+        "unity",
+		"editor"
+    ],
+    "category": "Instrument"
+}
