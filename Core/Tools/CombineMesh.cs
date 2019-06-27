@@ -13,14 +13,14 @@ namespace Trismegistus.Core.Tools {
         [SerializeField] private bool eUseMatrices = true;
 
         private void Start() {
-            if (auto) Utils.CombineAll(gameObject, eMergeSubMeshes, eUseMatrices);
+            if (auto) CombineMeshUtils.CombineAll(gameObject, eMergeSubMeshes, eUseMatrices);
         }
     }
 
     /// <summary>
     ///     Mesh combining tools
     /// </summary>
-    public static class Utils {
+    public static class CombineMeshUtils {
         /// <summary>
         ///     Combines all meshes by unique main material for each LOD (if exists)
         /// </summary>
@@ -44,7 +44,13 @@ namespace Trismegistus.Core.Tools {
             else
                 gameObjects.Add(root.GetComponentsInChildren<Renderer>());
 
-            foreach (var meshRenderers in gameObjects) CombineGroup(meshRenderers, mergeSubMeshes, useMatrices);
+            foreach (var meshRenderers in gameObjects) CombineGroup(
+                meshRenderers
+                .Where(r => r!=null)
+                .Where(r => r.sharedMaterial!=null)
+                .ToArray(), 
+                mergeSubMeshes, 
+                useMatrices);
         }
 
         /// <summary>
@@ -76,7 +82,7 @@ namespace Trismegistus.Core.Tools {
                     .ToArray())
                 .ToList();
 
-            foreach (var meshFilters in matMeshes) Combine(meshFilters, mergeSubMeshes, useMatrices);
+            foreach (var meshFilters in matMeshes) Combine(meshFilters.Where(mf => mf!=null).ToArray(), mergeSubMeshes, useMatrices);
         }
 
         /// <summary>
