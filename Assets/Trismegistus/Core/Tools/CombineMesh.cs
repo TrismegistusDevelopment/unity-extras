@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Trismegistus.Core.Extensions;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Trismegistus.Core.Tools {
     /// <summary>
@@ -9,11 +11,24 @@ namespace Trismegistus.Core.Tools {
     /// </summary>
     public class CombineMesh : MonoBehaviour {
         [SerializeField] private bool auto;
-        [SerializeField] private bool eMergeSubMeshes = true;
-        [SerializeField] private bool eUseMatrices = true;
+        [SerializeField] private CombineMeshSettings settings = new CombineMeshSettings(true);
 
         private void Start() {
-            if (auto) CombineMeshUtils.CombineAll(gameObject, eMergeSubMeshes, eUseMatrices);
+            if (auto) CombineMeshUtils.CombineAll(gameObject, settings);
+        }
+    }
+
+    [Serializable]
+    public struct CombineMeshSettings {
+        public bool MergeSubMeshes;
+        public bool UseMatrices;
+        public bool SkipMultiMaterials;
+
+        public CombineMeshSettings(bool mergeSubMeshes = true, bool useMatrices = true,
+            bool skipMultiMaterials = false) {
+            MergeSubMeshes = mergeSubMeshes;
+            UseMatrices = useMatrices;
+            SkipMultiMaterials = skipMultiMaterials;
         }
     }
 
@@ -25,15 +40,8 @@ namespace Trismegistus.Core.Tools {
         ///     Combines all meshes by unique main material for each LOD (if exists)
         /// </summary>
         /// <param name="root">Parent gameObject</param>
-        /// <param name="mergeSubMeshes">
-        ///     Defines whether Meshes should be combined into a single sub-mesh.
-        ///     <seealso cref="Mesh.CombineMeshes" />
-        /// </param>
-        /// <param name="useMatrices">
-        ///     Defines whether the transforms supplied in the CombineInstance array should be used or
-        ///     ignored.<seealso cref="Mesh.CombineMeshes" />
-        /// </param>
-        public static void CombineAll(GameObject root, bool mergeSubMeshes = true, bool useMatrices = true) {
+        /// <param name="settings"></param>
+        public static void CombineAll(GameObject root, CombineMeshSettings settings) {
             var lodGroup = root.GetComponent<LODGroup>();
 
             var gameObjects = new List<Renderer[]>();
@@ -44,28 +52,25 @@ namespace Trismegistus.Core.Tools {
             else
                 gameObjects.Add(root.GetComponentsInChildren<Renderer>());
 
-            foreach (var meshRenderers in gameObjects) CombineGroup(
-                meshRenderers
-                .Where(r => r!=null)
-                .Where(r => r.sharedMaterial!=null)
-                .ToArray(), 
-                mergeSubMeshes, 
-                useMatrices);
+            foreach (var meshRenderers in gameObjects) {
+                var renderers = meshRenderers
+                    .Where(r => r != null)
+                    .Where(r => r.sharedMaterial != null)
+                    .ToArray();
+                if (settings.SkipMultiMaterials)
+                    renderers = renderers.Where(r => r.sharedMaterials.Count() == 1).ToArray();
+                CombineGroup(
+                    renderers,
+                    settings);
+            }
         }
 
         /// <summary>
         ///     Combines meshes from specific renderers by main material
         /// </summary>
         /// <param name="renderers"></param>
-        /// <param name="mergeSubMeshes">
-        ///     Defines whether Meshes should be combined into a single sub-mesh.
-        ///     <seealso cref="Mesh.CombineMeshes" />
-        /// </param>
-        /// <param name="useMatrices">
-        ///     Defines whether the transforms supplied in the CombineInstance array should be used or
-        ///     ignored.<seealso cref="Mesh.CombineMeshes" />
-        /// </param>
-        public static void CombineGroup(Renderer[] renderers, bool mergeSubMeshes, bool useMatrices) {
+        /// <param name="settings"></param>
+        public static void CombineGroup(Renderer[] renderers, CombineMeshSettings settings) {
             if (renderers == null || renderers.Length < 1) {
                 Debug.Log("No renderers found");
                 return;
@@ -82,22 +87,15 @@ namespace Trismegistus.Core.Tools {
                     .ToArray())
                 .ToList();
 
-            foreach (var meshFilters in matMeshes) Combine(meshFilters.Where(mf => mf!=null).ToArray(), mergeSubMeshes, useMatrices);
+            foreach (var meshFilters in matMeshes) Combine(meshFilters.Where(mf => mf != null).ToArray(), settings);
         }
 
         /// <summary>
         ///     Combines meshes
         /// </summary>
         /// <param name="meshFilters"></param>
-        /// <param name="mergeSubMeshes">
-        ///     Defines whether Meshes should be combined into a single sub-mesh.
-        ///     <seealso cref="Mesh.CombineMeshes" />
-        /// </param>
-        /// <param name="useMatrices">
-        ///     Defines whether the transforms supplied in the CombineInstance array should be used or
-        ///     ignored.<seealso cref="Mesh.CombineMeshes" />
-        /// </param>
-        public static void Combine(IReadOnlyList<MeshFilter> meshFilters, bool mergeSubMeshes, bool useMatrices) {
+        /// <param name="settings"></param>
+        public static void Combine(IReadOnlyList<MeshFilter> meshFilters, CombineMeshSettings settings) {
             if (meshFilters == null || meshFilters.Count < 1) {
                 Debug.Log("No meshFilters found");
                 return;
@@ -123,7 +121,7 @@ namespace Trismegistus.Core.Tools {
 
             m.mesh = new Mesh();
 
-            m.mesh.CombineMeshes(combine, mergeSubMeshes, useMatrices);
+            m.mesh.CombineMeshes(combine, settings.MergeSubMeshes, settings.UseMatrices);
         }
     }
 }
