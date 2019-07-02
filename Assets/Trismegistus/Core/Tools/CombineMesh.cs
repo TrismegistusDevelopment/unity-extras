@@ -10,7 +10,7 @@ namespace Trismegistus.Core.Tools {
     ///     Example
     /// </summary>
     public class CombineMesh : MonoBehaviour {
-        [SerializeField] private bool auto;
+        [SerializeField] private bool auto = false;
         [SerializeField] private CombineMeshSettings settings = new CombineMeshSettings(true);
 
         private void Start() {
