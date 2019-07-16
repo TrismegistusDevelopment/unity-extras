@@ -12,9 +12,10 @@ namespace Trismegistus.Core.Tools {
     public class CombineMesh : MonoBehaviour {
         [SerializeField] private bool auto = false;
         [SerializeField] private CombineMeshSettings settings = new CombineMeshSettings(true);
+        [SerializeField] private bool debug = false;
 
         private void Start() {
-            if (auto) CombineMeshUtils.CombineAll(gameObject, settings);
+            if (auto) CombineMeshUtils.CombineAll(gameObject, settings, debug);
         }
     }
 
@@ -41,27 +42,35 @@ namespace Trismegistus.Core.Tools {
         /// </summary>
         /// <param name="root">Parent gameObject</param>
         /// <param name="settings"></param>
-        public static void CombineAll(GameObject root, CombineMeshSettings settings) {
+        /// <param name="debug"></param>
+        public static void CombineAll(GameObject root, CombineMeshSettings settings, bool debug = false) {
             var lodGroup = root.GetComponent<LODGroup>();
 
             var gameObjects = new List<Renderer[]>();
 
-            if (lodGroup != null)
+            if (lodGroup != null) {
+                if (debug) Debug.Log($"Found {lodGroup.lodCount} LODs, adding renderers for for separate combining");
                 gameObjects.AddRange(lodGroup.GetLODs()
                     .Select(loD => loD.renderers));
-            else
+            }
+            else {
+                if (debug) Debug.Log("No LODGroup found, adding all renderers");
                 gameObjects.Add(root.GetComponentsInChildren<Renderer>());
+            }
 
             foreach (var meshRenderers in gameObjects) {
                 var renderers = meshRenderers
                     .Where(r => r != null)
                     .Where(r => r.sharedMaterial != null)
                     .ToArray();
-                if (settings.SkipMultiMaterials)
+                if (settings.SkipMultiMaterials) {
+                    var size = renderers.Length;
                     renderers = renderers.Where(r => r.sharedMaterials.Count() == 1).ToArray();
+                    if (debug) Debug.Log($"Excluding {size-renderers.Length} renderers with multiple materials");
+                }
                 CombineGroup(
                     renderers,
-                    settings);
+                    settings , debug);
             }
         }
 
@@ -70,24 +79,25 @@ namespace Trismegistus.Core.Tools {
         /// </summary>
         /// <param name="renderers"></param>
         /// <param name="settings"></param>
-        public static void CombineGroup(Renderer[] renderers, CombineMeshSettings settings) {
+        /// <param name="debug"></param>
+        public static void CombineGroup(Renderer[] renderers, CombineMeshSettings settings, bool debug = false) {
             if (renderers == null || renderers.Length < 1) {
-                Debug.Log("No renderers found");
+                if (debug) Debug.Log("No renderers found");
                 return;
             }
 
-            Debug.Log($"Found {renderers.Length} renderers");
+            if (debug) Debug.Log($"Found {renderers.Length} renderers");
 
             var uniqueMaterials = renderers.Select(x => x.sharedMaterial).Distinct();
             var enumerable = uniqueMaterials as Material[] ?? uniqueMaterials.ToArray();
-            Debug.Log($"Found {enumerable.Count()} unique materials");
+            if (debug) Debug.Log($"Found {enumerable.Count()} unique materials");
 
             var matMeshes = enumerable.Select(mat => renderers.Where(x => x.sharedMaterial == mat)
                     .Select(x => x.GetComponent<MeshFilter>())
                     .ToArray())
                 .ToList();
 
-            foreach (var meshFilters in matMeshes) Combine(meshFilters.Where(mf => mf != null).ToArray(), settings);
+            foreach (var meshFilters in matMeshes) Combine(meshFilters.Where(mf => mf != null).ToArray(), settings, debug);
         }
 
         /// <summary>
@@ -95,9 +105,10 @@ namespace Trismegistus.Core.Tools {
         /// </summary>
         /// <param name="meshFilters"></param>
         /// <param name="settings"></param>
-        public static void Combine(IReadOnlyList<MeshFilter> meshFilters, CombineMeshSettings settings) {
+        /// <param name="debug"></param>
+        public static void Combine(IReadOnlyList<MeshFilter> meshFilters, CombineMeshSettings settings, bool debug = false) {
             if (meshFilters == null || meshFilters.Count < 1) {
-                Debug.Log("No meshFilters found");
+                if (debug) Debug.Log("No meshFilters found");
                 return;
             }
 
