@@ -1,5 +1,7 @@
 ﻿using System;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -26,6 +28,10 @@ namespace Trismegistus.Core.Types {
         public float Clamp(float value) => Mathf.Clamp(value, Min, Max);
 
         public float RandomValue => Random.Range(Min, Max);
+
+        public float InvInterpolated(float value) => Mathf.InverseLerp(Min, Max, value);
+
+        public float Interpolated(float value) => Mathf.Lerp(Min, Max, value);
     }
 
 #if UNITY_EDITOR
