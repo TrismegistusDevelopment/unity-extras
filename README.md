@@ -21,6 +21,7 @@ You _should_ commit `manifest.json`
 - __Tools__
   - __CombineMesh__ - combines meshes from different go with material grouping
   - __ScenePicker__ - inspector for picking Scene path from scene asset
+  - __ScriptingDefineSymbolsTool__ - changing Scripting Define Symbols (`#DEFINE` analogue) from code in editor
 - __Extensions__
   - __TextureExtensions__
     - Camera to Texture2D
