@@ -1,0 +1,38 @@
+<Build xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <xmlVersion>0</xmlVersion>
+  <versions>
+    <Version>
+      <major>0</major>
+      <minor>0</minor>
+      <build>6</build>
+      <revision />
+      <date>2020-08-17T15:08:00</date>
+      <dateString>2020.08.17.1508</dateString>
+      <yanked>false</yanked>
+      <unreleased>false</unreleased>
+      <notes>
+        <Note>
+          <category>General</category>
+          <description>Init</description>
+        </Note>
+      </notes>
+    </Version>
+  </versions>
+  <editorSettings>
+    <saveToPlayerSettings>true</saveToPlayerSettings>
+    <saveToPackageJson>true</saveToPackageJson>
+    <packageJsonPath>Packages\trismegistus.unity.core\package.json</packageJsonPath>
+    <buildPathScheme>{p_path}/Build/{p_name}_{ver}</buildPathScheme>
+    <saveToChangelogMd>true</saveToChangelogMd>
+  </editorSettings>
+  <todo>
+    <major>0</major>
+    <minor>0</minor>
+    <build>0</build>
+    <revision />
+    <date>0001-01-01T00:00:00</date>
+    <yanked>false</yanked>
+    <unreleased>false</unreleased>
+    <notes />
+  </todo>
+</Build>
