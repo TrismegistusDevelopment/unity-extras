@@ -17,6 +17,18 @@ MonoBehaviour:
     versions:
     - major: 0
       minor: 0
+      build: 7
+      revision: 
+      dateString: 2020.08.17.1512
+      yanked: 1
+      unreleased: 0
+      notes:
+      - category: 3
+        description: Add metas
+      - category: 3
+        description: Change repo path
+    - major: 0
+      minor: 0
       build: 6
       revision: 
       dateString: 2020.08.17.1508
@@ -31,8 +43,9 @@ MonoBehaviour:
       packageJsonPath: Packages\trismegistus.unity.core\package.json
       buildPathScheme: '{p_path}/Build/{p_name}_{ver}'
       saveToChangelogMd: 1
-    releaseNotes: "RELEASE NOTES\r\n\r\nv0.0.6 (2020.08.17.1508)\r\n  GENERAL\r\n   
-      * Init\r\n\r\n"
+    releaseNotes: "RELEASE NOTES\r\n\r\nv0.0.7 [YANKED] (2020.08.17.1512)\r\n  FIXES\r\n   
+      * Add metas\r\n    * Change repo path\r\n\r\nv0.0.6 (2020.08.17.1508)\r\n 
+      GENERAL\r\n    * Init\r\n\r\n"
     todo:
       major: 0
       minor: 0

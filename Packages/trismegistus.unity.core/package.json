@@ -1,7 +1,7 @@
 {
     "name": "trismegistus.unity.core",
     "displayName": "Trismegistus Core",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "unity": "2019.1",
     "description": "Core tools and extensions",
     "keywords": [
@@ -16,8 +16,8 @@
         "url": "https://github.com/Hermesiss"
     },
     "contributors": [],
-    "homepage": "https://github.com/Hermesiss/unity-extras.git",
+    "homepage": "https://github.com/TrismegistusDevelopment/unity-extras.git",
     "bugs": {
-        "url": "https://github.com/Hermesiss/unity-extras/issues"
+        "url": "https://github.com/TrismegistusDevelopment/unity-extras/issues"
     }
 }

@@ -4,6 +4,26 @@
     <Version>
       <major>0</major>
       <minor>0</minor>
+      <build>7</build>
+      <revision />
+      <date>2020-08-17T15:12:00</date>
+      <dateString>2020.08.17.1512</dateString>
+      <yanked>true</yanked>
+      <unreleased>false</unreleased>
+      <notes>
+        <Note>
+          <category>Fixes</category>
+          <description>Add metas</description>
+        </Note>
+        <Note>
+          <category>Fixes</category>
+          <description>Change repo path</description>
+        </Note>
+      </notes>
+    </Version>
+    <Version>
+      <major>0</major>
+      <minor>0</minor>
       <build>6</build>
       <revision />
       <date>2020-08-17T15:08:00</date>
